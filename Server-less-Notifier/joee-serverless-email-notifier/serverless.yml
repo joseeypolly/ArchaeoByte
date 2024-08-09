@@ -1,0 +1,23 @@
+service: serverless-email-notifier
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ses:*"
+      Resource:
+        - "*"
+
+functions:
+  dailyReminder:
+    handler: functions/sendNotificationDaily.handler
+    events:
+      - schedule: rate(1 day)
+  weekendReminder:
+    handler: functions/sendNotificationEveryWeekend.handler
+    events:
+      - schedule: cron(0 0 0 ? * SUN,SAT *)
